@@ -12,7 +12,12 @@ target_compile_definitions(xmlsec INTERFACE
 
 
 target_include_directories(xmlsec INTERFACE include)
-target_link_libraries(xmlsec INTERFACE ${CMAKE_CURRENT_LIST_DIR}/lib/xmlsec.lib)
+target_link_libraries(xmlsec INTERFACE 
+	${CMAKE_CURRENT_LIST_DIR}/lib/xmlsec.lib
+	${CMAKE_CURRENT_LIST_DIR}/lib/libexslt.lib
+	${CMAKE_CURRENT_LIST_DIR}/lib/libxml2.lib
+	${CMAKE_CURRENT_LIST_DIR}/lib/libxslt.lib
+	)
 
 
 add_executable(xmlsec_example ${CMAKE_CURRENT_LIST_DIR}/examples/sign2.c  )

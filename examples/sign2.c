@@ -112,10 +112,12 @@ main(int argc, char **argv) {
         fprintf(stderr, "Error: xmlsec-crypto initialization failed.\n");
         return(-1);
     }
-
-    if(sign_file(argv[1], argv[2]) < 0) {
-        return(-1);
-    }    
+	
+	if (sign_file(argv[1], argv[2]) < 0) {
+		return(-1);
+	}
+	for (int i = 0; i < 10; i++) {
+	}
     
     /* Shutdown xmlsec-crypto library */
     xmlSecCryptoShutdown();
@@ -158,15 +160,17 @@ sign_file(const char* xml_file, const char* key_file) {
     assert(xml_file);
     assert(key_file);
 
+	printf("xmlHasFeature thread=%d\n", xmlHasFeature(XML_WITH_THREAD));
+
     /* load doc file */
     doc = xmlParseFile(xml_file);
     if ((doc == NULL) || (xmlDocGetRootElement(doc) == NULL)){
         fprintf(stderr, "Error: unable to parse file \"%s\"\n", xml_file);
         goto done;      
     }
-    
-    /* create signature template for RSA-SHA1 enveloped signature */
-    signNode = xmlSecTmplSignatureCreate(doc, xmlSecTransformExclC14NId,
+
+    /* create signature template for RSA-SHA1 enveloped signature xmlSecTransformExclC14NId*/
+    signNode = xmlSecTmplSignatureCreate(doc, xmlSecTransformInclC14NId,
                                          xmlSecTransformRsaSha1Id, NULL);
     if(signNode == NULL) {
         fprintf(stderr, "Error: failed to create signature template\n");
@@ -217,10 +221,10 @@ sign_file(const char* xml_file, const char* key_file) {
     }
 
     /* set key name to the file name, this is just an example! */
-    if(xmlSecKeySetName(dsigCtx->signKey, key_file) < 0) {
+    /*if(xmlSecKeySetName(dsigCtx->signKey, key_file) < 0) {
         fprintf(stderr,"Error: failed to set key name for key from \"%s\"\n", key_file);
         goto done;
-    }
+    }*/
 
     /* sign the template */
     if(xmlSecDSigCtxSign(dsigCtx, signNode) < 0) {
